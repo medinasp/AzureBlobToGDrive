@@ -23,14 +23,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/upload-to-drive/{year}/{month}", async (int year, int month) =>
+app.MapMethods("/upload-to-drive/{year}/{month}", new[] { "POST" }, async (int year, int month, HttpRequest req) =>
 {
     var yearMonth = new DateTime(year, month, 1);
-    string blobStorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=nomedasuacontaAzure;AccountKey=chavedacontaAzure;EndpointSuffix=core.windows.net";
+    string blobStorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=nomedoblobstorage;AccountKey=chavedaconta;EndpointSuffix=core.windows.net";
     string blobStorageContainerName = "filemanager";
     //abaixo o endereço onde vc quer fazer a "baldeacao" dos arquivos
     string localFolderPath = @"C:\1A\RepHist\ConAzureBlobStorageXGoogleDrive\AzureBlobXGDrive\bin\Debug\net7.0\";
-    string googleDriveDirectoryId = ""; // ID do diretório de destino no Google Drive
+    string googleDriveDirectoryId = "idDiretorio"; // ID do diretório de destino no Google Drive
 
     // Método para obter o serviço do Google Drive
     DriveService GetDriveService()
@@ -40,7 +40,7 @@ app.MapGet("/upload-to-drive/{year}/{month}", async (int year, int month) =>
 
         GoogleCredential credential;
         //endereco para o json com suas credencias do google
-        using (var stream = new FileStream(@"C:\1A\RepHist\ConAzureBlobStorageXGoogleDrive\credenciais.json", FileMode.Open, FileAccess.Read))
+        using (var stream = new FileStream(@"C:\1A\RepHist\ConAzureBlobStorageXGoogleDrive\nomedojsoncomcredenciais.json", FileMode.Open, FileAccess.Read))
         {
             credential = GoogleCredential.FromStream(stream)
                 .CreateScoped(scopes);
